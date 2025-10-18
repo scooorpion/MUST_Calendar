@@ -24,7 +24,7 @@ class CalendarExporter:
 		}
 
 	def export(self, termCode, trigger=30):
-		timeTable_url = f'https://classtimetable-coes-wmweb.must.edu.mo/class-timetable-api/lessons/student-exam-webs?lang={self.locale}&termCode={termCode}&startDate={date.today().replace(year=date.today().year - 1).isoformat()}&endDate={date.today().replace(year=date.today().year + 1).isoformat()}'
+		timeTable_url = f'https://classtimetable-coes-wmweb.must.edu.mo/x-class-timetable-api/lessons/student-exam-webs?lang={self.locale}&termCode={termCode}&startDate={date.today().replace(year=date.today().year - 1).isoformat()}&endDate={date.today().replace(year=date.today().year + 1).isoformat()}'
 		cal = Calendar()
 		request = requests.get(timeTable_url, headers=self.headers)
 		lessons = request.json()['model']['lesson']

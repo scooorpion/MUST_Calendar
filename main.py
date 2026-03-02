@@ -1,9 +1,13 @@
 #coding=utf-8
-import requests
 import os
+import sys
+
+import requests
 from icalendar import Calendar, Event, Alarm
 from datetime import datetime, date, timedelta
 from login import Login
+
+import dotenv
 
 class CalendarExporter:
 	def __init__(self, cookie, studentID, locale='zh_MO'):
@@ -30,7 +34,7 @@ class CalendarExporter:
 		lessons = request.json()['model']['lesson']
 		if not lessons:
 			print('[Error] No data found')
-			exit()
+			sys.exit(1)
 		else:
 			print('Success: ' + str(len(lessons)) + ' lessons found')
 		for i in lessons:
@@ -73,25 +77,16 @@ class CalendarExporter:
 
 
 if __name__ == '__main__':
-	try:
-		termCode = os.environ['TERM']
-	except:
-		import config
-		termCode = config.termCode
+	dotenv.load_dotenv()
+
+	termCode = os.environ['TERM']
+	username = os.environ['USERNAME']
+	password = os.environ['PASSWORD']
 
 	for i in termCode.split(','):
 		if len(i) != 4:
 			print('[Error] 学期代码不合法')
 			exit()
-
-	try:
-		username = os.environ['USERNAME']
-		password = os.environ['PASSWORD']
-	except:
-		import config
-		username = config.username
-		password = config.password
-
 
 	login_obj = Login(username, password)
 	driver = login_obj.get_driver()
@@ -105,7 +100,7 @@ if __name__ == '__main__':
 	if table_cookie == '':
 		print('[Error] 请检查账号密码是否正确')
 		login_obj.close()
-		exit()
+		raise RuntimeError('请检查账号密码是否正确')
 
 	exporter = CalendarExporter(table_cookie, locale=os.environ.get('LOCALE', ''), studentID=username)
 	for i in termCode.split(','):

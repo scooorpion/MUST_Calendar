@@ -1,4 +1,4 @@
-# This workflow will run every day at 00:00 UTC
+# This workflow runs every day at 04:17 in Asia/Macau.
 name: Update TimeTable Everyday
 
 env:
@@ -10,23 +10,21 @@ env:
   # 在这里修改学期代码，用逗号分隔。
   # Set termcode here, separated by commas.
   # Example: 2502,2506
-  TERM: "2502,2506"
+  TERM_CODES: "2609,2702"
 
-  # Change language here, uncomment to use english version
-  # LOCALE: "en_US"
+  # 日程开始前多少分钟提醒
+  # Reminder minutes before each timed event
+  ALERT: "30"
+
+  # zh_MO for Chinese, en_US for English
+  LOCALE: "zh_MO"
 
 
 on:
   workflow_dispatch:
-  
-  # 在这里修改定时执行的时间
-  # 每天的 00:00 运行
-
-  # Uncomment the following lines to enable scheduled runs
-  # schedule:
-  #   - cron: '0 0 * * *'
-
-  
+  schedule:
+    - cron: '17 4 * * *'
+      timezone: 'Asia/Macau'
 
 permissions:
   contents: write
@@ -64,8 +62,10 @@ jobs:
       run: |
         git config --global user.email calRobot@github.com
         git config --global user.name githubAction
-        git add -f .
-        git commit -m "update" -a
+        git add -f "output/${USERNAME}.ics"
+        if ! git diff --cached --quiet; then
+          git commit -m "update"
+        fi
 
     - name: Push changes
       uses: ad-m/github-push-action@master

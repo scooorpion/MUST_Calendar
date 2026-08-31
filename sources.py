@@ -33,6 +33,7 @@ OA_SCHEDULE_SERVICE_TYPES_API_URL = (
 OA_SCHEDULE_REFERER = "https://oa-schedule-new-wmweb.must.edu.mo/"
 OA_SCHEDULE_API_SALT = "wm_oa_schedule_new"
 OA_SCHEDULE_SERVICE_CODE = "S-WM-SCHEDULE-NEW"
+OA_ALL_DAY_EVENT_TYPES = {"LEAVE_CALENDER"}
 MACAU_TIMEZONE = ZoneInfo("Asia/Macau")
 REQUEST_TIMEOUT_SECONDS = 30
 
@@ -285,14 +286,18 @@ class OAScheduleSource:
     ) -> CalendarEvent | None:
         if _is_true(raw_event.get("isIgnore")):
             return None
-        if _text(raw_event.get("eventType")).upper() == "CLASS_TIMETABLE":
+        event_type = _text(raw_event.get("eventType")).upper()
+        if event_type == "CLASS_TIMETABLE":
             return None
 
         event_id = raw_event.get("id")
         if event_id is None:
             raise SourceDataError("OA schedule event has no id")
 
-        is_all_day = _is_true(raw_event.get("isAllDay"))
+        is_all_day = (
+            event_type in OA_ALL_DAY_EVENT_TYPES
+            or _is_true(raw_event.get("isAllDay"))
+        )
         if is_all_day:
             start: date | datetime = _required_date(
                 raw_event.get("tempStartTime"),

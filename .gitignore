@@ -162,3 +162,5 @@ cython_debug/
 config.py
 .vscode/
 output/
+.github/.DS_Store
+.DS_Store

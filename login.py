@@ -18,6 +18,9 @@ LOGIN_TIMEOUT_SECONDS = 30
 class Login:
     def __init__(self, username: str, password: str):
         chrome_options = webdriver.ChromeOptions()
+        chrome_binary = os.environ.get("CHROME_BINARY")
+        if chrome_binary:
+            chrome_options.binary_location = chrome_binary
         chrome_options.add_argument("--headless")
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--no-sandbox")

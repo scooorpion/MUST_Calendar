@@ -2,14 +2,9 @@
 
 [English](README_EN.md) | [简体中文](README.md)
 
-将澳门科技大学的学生课表与 WeMust OA 日程合并为一个 ICS 订阅，支持 iOS、Android、HarmonyOS、macOS 和 Windows 系统日历。
+将澳门科技大学的学生课表导出为 ICS 订阅，支持 iOS、Android、HarmonyOS、macOS 和 Windows 系统日历。
 
-程序只登录一次 MUST 统一认证，然后分别读取：
-
-- 学生课表：课程名称、教室、教师与上课时间
-- WeMust OA 日程：活动、会议、假期及其他个人日程
-
-OA 日程中重复提供的 `CLASS_TIMETABLE` 事件会被过滤，课程以学生课表接口为准。最终只生成 `output/[学号].ics`。
+程序登录 MUST 统一认证，从学生课表读取课程名称、教室、教师与上课时间，生成 `output/[学号].ics`。
 
 ## 本地运行
 
@@ -35,7 +30,7 @@ OA 日程中重复提供的 `CLASS_TIMETABLE` 事件会被过滤，课程以学�
     python ./main.py
     ```
 
-`TERM_CODES` 支持多个四位学期代码，以逗号分隔。OA 日程从最早学期代码对应月份的 1 日开始，到当前日期后一年为止。OA 日程会包含侧边筛选中所有可用事项类型，以及“我参与的”和“我管理的”事项；“忽略”事项不会导出。
+`TERM_CODES` 支持多个四位学期代码，以逗号分隔。
 
 ## GitHub Actions 部署
 
@@ -58,7 +53,6 @@ OA 日程中重复提供的 `CLASS_TIMETABLE` 事件会被过滤，课程以学�
 
 - [x] 多学期(2025.5.9)
 - [x] 多语言支持(2025.5.23)
-- [x] 合并 WeMust OA 日程(2026.8.31)
 - [ ] 考试日历
 
 欢迎PR和Issues！

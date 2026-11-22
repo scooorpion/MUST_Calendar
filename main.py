@@ -10,13 +10,12 @@ from dotenv import load_dotenv
 
 from calendar_exporter import UnifiedCalendarExporter
 from login import Login
-from sources import ClassTimetableSource, OAScheduleSource
+from sources import ClassTimetableSource
 
 
 CLASS_TIMETABLE_SITE_URL = (
     "https://classtimetable-coes-wmweb.must.edu.mo/my-class-timetable-student"
 )
-OA_SCHEDULE_SITE_URL = "https://oa-schedule-new-wmweb.must.edu.mo/"
 SUPPORTED_LOCALES = {"zh_MO", "en_US"}
 CALENDAR_RANGE_DAYS = 365
 
@@ -78,23 +77,12 @@ def parse_term_codes(value: str) -> tuple[str, ...]:
     return term_codes
 
 
-def earliest_term_start(term_codes: tuple[str, ...]) -> date:
-    return min(
-        date(2000 + int(term_code[:2]), int(term_code[2:]), 1)
-        for term_code in term_codes
-    )
-
-
 def run(configuration: Configuration) -> Path:
     login = Login(configuration.username, configuration.password)
     try:
         class_cookie = login.get_site_cookie(
             CLASS_TIMETABLE_SITE_URL,
             "wm.class-timetable.sid",
-        )
-        oa_cookie = login.get_site_cookie(
-            OA_SCHEDULE_SITE_URL,
-            "wm.schedule.sid",
         )
     finally:
         login.close()
@@ -109,14 +97,8 @@ def run(configuration: Configuration) -> Path:
     ).fetch(configuration.term_codes, class_start_date, end_date)
     print(f"Success: {len(class_events)} class timetable events found")
 
-    oa_events = OAScheduleSource(
-        oa_cookie,
-        locale=configuration.locale,
-    ).fetch(earliest_term_start(configuration.term_codes), end_date)
-    print(f"Success: {len(oa_events)} OA schedule events found")
-
     output_path = UnifiedCalendarExporter(configuration.username).export(
-        [*class_events, *oa_events],
+        class_events,
         trigger_minutes=configuration.alert_minutes,
     )
     print(f"Success: {output_path} created")

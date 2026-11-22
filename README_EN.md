@@ -2,14 +2,9 @@
 
 [English](README_EN.md) | [简体中文](README.md)
 
-Merge the Macau University of Science and Technology student timetable and WeMust OA schedule into one ICS subscription for iOS, Android, HarmonyOS, macOS, and Windows calendars.
+Subscribe to your Macau University of Science and Technology student timetable on iOS, Android, HarmonyOS, macOS, or Windows.
 
-The program signs in to MUST CAS once and then reads:
-
-- Student timetable: course names, rooms, teachers, and lesson times
-- WeMust OA schedule: activities, meetings, holidays, and other personal events
-
-`CLASS_TIMETABLE` events duplicated by OA are excluded, so course data remains authoritative from the student timetable API. The only generated file is `output/[StudentID].ics`.
+The program signs in to MUST CAS, reads course names, rooms, teachers, and lesson times from the student timetable, and writes them to `output/[StudentID].ics`.
 
 ## Local setup
 
@@ -35,7 +30,7 @@ The program signs in to MUST CAS once and then reads:
     python ./main.py
     ```
 
-`TERM_CODES` accepts comma-separated four-digit term codes. OA events run from the first day of the earliest configured term month through one year after the current date. They include every available event type from the sidebar filter plus both joined and managed events; ignored events are excluded.
+`TERM_CODES` accepts comma-separated four-digit term codes.
 
 ## GitHub Actions deployment
 
@@ -55,7 +50,6 @@ https://raw.githubusercontent.com/yourGitHubAccount/MUST_Calendar/refs/heads/mai
 
 - [x] Multiple terms
 - [x] Multiple languages
-- [x] WeMust OA schedule integration
 - [ ] Exam calendar
 
 PRs and Issues are welcome!
